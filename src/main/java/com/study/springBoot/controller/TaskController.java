@@ -1,14 +1,49 @@
 package com.study.springBoot.controller;
 
+import com.study.springBoot.Pojo.TaskObj;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 public class TaskController {
 
+    Map<Integer, TaskObj> allTasks = new HashMap<Integer, TaskObj>();
+    AtomicInteger id = new AtomicInteger();
+
     @GetMapping("/task")
-    ResponseEntity<String> getTasks() {
-        return ResponseEntity.ok("Get API added...");
+    ResponseEntity<Map<Integer,TaskObj>> getTasks() {
+        return ResponseEntity.ok(allTasks);
+    }
+
+    @PostMapping("/task")
+    TaskObj createTask(@RequestBody TaskObj taskObj) {
+        allTasks.put(id.getAndIncrement(), taskObj);
+        return taskObj;
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<TaskObj> updateTask(@PathVariable Integer id, @RequestParam String status) {
+        if(allTasks.get(id) != null) {
+            allTasks.get(id).setStatus(status);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(allTasks.get(id));
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
