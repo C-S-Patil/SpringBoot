@@ -34,6 +34,17 @@ public class TaskController {
         }
         return ResponseEntity.ok(allTasks.get(id));
     }
+
+    @DeleteMapping("/{id}")
+    String deleteTask(@PathVariable Integer id) {
+        if(allTasks.get(id) != null) {
+            String name = allTasks.get(id).name;
+            allTasks.remove(id);
+            return name + " deleted successful";
+        } else {
+            return "Provided Id not found";
+        }
+    }
 }
 
 
